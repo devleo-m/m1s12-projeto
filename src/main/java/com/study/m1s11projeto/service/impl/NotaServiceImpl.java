@@ -15,12 +15,10 @@ import java.util.List;
 public class NotaServiceImpl implements NotaService {
 
     private final NotaRepository notaRepository;
-    private final DisciplinaMatriculaService disciplinaMatriculaService;
     private final DisciplinaMatriculaRepository disciplinaMatriculaRepository;
 
-    public NotaServiceImpl(NotaRepository notaRepository, DisciplinaMatriculaService disciplinaMatriculaService, DisciplinaMatriculaRepository disciplinaMatriculaRepository) {
+    public NotaServiceImpl(NotaRepository notaRepository, DisciplinaMatriculaRepository disciplinaMatriculaRepository) {
         this.notaRepository = notaRepository;
-        this.disciplinaMatriculaService = disciplinaMatriculaService;
         this.disciplinaMatriculaRepository = disciplinaMatriculaRepository;
     }
     @Override
