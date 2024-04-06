@@ -1,5 +1,7 @@
 package com.study.m1s11projeto.service;
 
+import com.study.m1s11projeto.DTO.AlunoDto;
+import com.study.m1s11projeto.DTO.DisciplinaDto;
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
 
 import java.util.List;

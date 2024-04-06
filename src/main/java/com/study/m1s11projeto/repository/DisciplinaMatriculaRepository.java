@@ -14,7 +14,6 @@ import java.util.List;
 public interface DisciplinaMatriculaRepository extends JpaRepository<DisciplinaMatriculaEntity, Long> {
     @Query("SELECT dm FROM DisciplinaMatriculaEntity dm WHERE dm.aluno = :aluno")
     List<DisciplinaMatriculaEntity> findByAluno(@Param("aluno") AlunoEntity aluno);
-
     List<DisciplinaMatriculaEntity> findByDisciplina(DisciplinaEntity disciplina);
 
 }

@@ -1,5 +1,6 @@
 package com.study.m1s11projeto.controller;
 
+import com.study.m1s11projeto.DTO.MatriculaDto;
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
 import com.study.m1s11projeto.service.DisciplinaMatriculaService;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,17 @@ public class MatriculaController {
     }
 
     @PostMapping
-    public ResponseEntity<DisciplinaMatriculaEntity> matricularAluno(@RequestBody Long idAluno, @RequestBody Long idDisciplina) {
+    public ResponseEntity<DisciplinaMatriculaEntity> matricularAluno(@RequestBody MatriculaDto matriculaDto) {
+        Long idAluno = matriculaDto.getIdAluno();
+        Long idDisciplina = matriculaDto.getIdDisciplina();
+
+        // Chame o serviço para matricular o aluno na disciplina
         DisciplinaMatriculaEntity matricula = disciplinaMatriculaService.matricularAluno(idAluno, idDisciplina);
+
+        // Retorne a resposta com o resultado da operação
         return ResponseEntity.status(HttpStatus.CREATED).body(matricula);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarMatricula(@PathVariable Long id) {

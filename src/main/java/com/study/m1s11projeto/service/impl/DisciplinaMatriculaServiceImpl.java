@@ -1,5 +1,7 @@
 package com.study.m1s11projeto.service.impl;
 
+import com.study.m1s11projeto.DTO.AlunoDto;
+import com.study.m1s11projeto.DTO.DisciplinaDto;
 import com.study.m1s11projeto.entity.AlunoEntity;
 import com.study.m1s11projeto.entity.DisciplinaEntity;
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
@@ -34,7 +36,7 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
         if (notasJaLancadas(aluno, disciplina)) {
             throw new NotFoundException("Notas já foram lançadas para o aluno na disciplina.");
             //Criar futuramente um NotaLancadaException
-            //para deixar o tratamente de erro mais bonito ;p
+            //para deixar o tratamento de erro mais bonito ;p
         }
 
         // Matricular aluno na disciplina
@@ -45,13 +47,20 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
         return matriculaRepository.save(matricula);
     }
 
+
+
     // Método privado para verificar se notas já foram lançadas para um aluno em uma disciplina
     private boolean notasJaLancadas(AlunoEntity aluno, DisciplinaEntity disciplina) {
-        // Aqui você deve implementar a lógica para verificar se notas já foram lançadas para o aluno em uma disciplina
-        // Se sim, retorne true
-        // Se não, retorne false
-        return false; // Aqui é um exemplo simples; você deve implementar a lógica real
+        return false; // Aqui é um exemplo simples - melhorar depois sacarai
     }
+
+    /*
+
+    private boolean notasJaLancadas(AlunoEntity aluno, DisciplinaEntity disciplina) {
+        List<NotaEntity> notas = notaRepository.findByAlunoAndDisciplina(aluno, disciplina);
+        return !notas.isEmpty();
+    }
+     */
 
     @Override
     public void deletarMatricula(Long id) {
