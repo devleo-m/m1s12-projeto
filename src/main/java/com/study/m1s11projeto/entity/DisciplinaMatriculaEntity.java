@@ -55,4 +55,8 @@ public class DisciplinaMatriculaEntity implements Serializable {
             mediaFinal = BigDecimal.ZERO;
         }
     }
+
+    public void setMediaFinal(BigDecimal mediaFinal) {
+        this.mediaFinal = mediaFinal;
+    }
 }
