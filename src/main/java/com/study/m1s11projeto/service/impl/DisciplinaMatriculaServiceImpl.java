@@ -2,6 +2,7 @@ package com.study.m1s11projeto.service.impl;
 
 import com.study.m1s11projeto.DTO.AlunoDto;
 import com.study.m1s11projeto.DTO.DisciplinaDto;
+import com.study.m1s11projeto.DTO.MediaGeralAlunoDTO;
 import com.study.m1s11projeto.entity.AlunoEntity;
 import com.study.m1s11projeto.entity.DisciplinaEntity;
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
@@ -94,5 +95,25 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
     public List<DisciplinaMatriculaEntity> buscarMatriculasPorDisciplina(Long idDisciplina) {
         DisciplinaEntity disciplina = disciplinaService.obterDisciplinaPorId(idDisciplina);
         return matriculaRepository.findByDisciplina(disciplina);
+    }
+
+    //card7
+    @Override
+    public MediaGeralAlunoDTO calcularMediaGeralDoAluno(Long idAluno) {
+        List<DisciplinaMatriculaEntity> matriculas = matriculaRepository.findByAluno_Id(idAluno);
+
+        double somaDasMedias = 0.0;
+        int quantidadeDeDisciplinas = matriculas.size();
+
+        for (DisciplinaMatriculaEntity matricula : matriculas) {
+            somaDasMedias += matricula.getMediaFinal().doubleValue();
+        }
+
+        double mediaGeral = quantidadeDeDisciplinas > 0 ? somaDasMedias / quantidadeDeDisciplinas : 0.0;
+
+        MediaGeralAlunoDTO mediaGeralAlunoDTO = new MediaGeralAlunoDTO();
+        mediaGeralAlunoDTO.setMediaGeral(mediaGeral);
+
+        return mediaGeralAlunoDTO;
     }
 }

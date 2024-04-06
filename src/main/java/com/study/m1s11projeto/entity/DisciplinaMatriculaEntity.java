@@ -43,6 +43,10 @@ public class DisciplinaMatriculaEntity implements Serializable {
     @OneToMany(mappedBy = "matricula")
     private List<NotaEntity> notas;
 
+    public DisciplinaMatriculaEntity() {
+
+    }
+
     @PrePersist
     protected void calcularMediaFinal() {
         // definir a data de matrícula automaticamente antes de salvar
@@ -58,5 +62,10 @@ public class DisciplinaMatriculaEntity implements Serializable {
 
     public void setMediaFinal(BigDecimal mediaFinal) {
         this.mediaFinal = mediaFinal;
+    }
+
+    // Construtor que aceita um argumento do tipo int para o ID da matrícula
+    public DisciplinaMatriculaEntity(int id) {
+        this.id = (long) id;
     }
 }

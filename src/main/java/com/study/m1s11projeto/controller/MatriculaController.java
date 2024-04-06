@@ -1,6 +1,7 @@
 package com.study.m1s11projeto.controller;
 
 import com.study.m1s11projeto.DTO.MatriculaDto;
+import com.study.m1s11projeto.DTO.MediaGeralAlunoDTO;
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
 import com.study.m1s11projeto.service.DisciplinaMatriculaService;
 import org.springframework.http.HttpStatus;
@@ -53,5 +54,11 @@ public class MatriculaController {
     public ResponseEntity<List<DisciplinaMatriculaEntity>> obterMatriculasPorDisciplina(@PathVariable Long idDisciplina) {
         List<DisciplinaMatriculaEntity> matriculas = disciplinaMatriculaService.buscarMatriculasPorDisciplina(idDisciplina);
         return ResponseEntity.status(HttpStatus.OK).body(matriculas);
+    }
+
+    @GetMapping("/aluno/{id}/media-geral")
+    public ResponseEntity<MediaGeralAlunoDTO> calcularMediaGeralDoAluno(@PathVariable Long id) {
+        MediaGeralAlunoDTO mediaGeralAlunoDTO = disciplinaMatriculaService.calcularMediaGeralDoAluno(id);
+        return ResponseEntity.status(HttpStatus.OK).body(mediaGeralAlunoDTO);
     }
 }

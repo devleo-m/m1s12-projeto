@@ -2,6 +2,7 @@ package com.study.m1s11projeto.service;
 
 import com.study.m1s11projeto.DTO.AlunoDto;
 import com.study.m1s11projeto.DTO.DisciplinaDto;
+import com.study.m1s11projeto.DTO.MediaGeralAlunoDTO;
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface DisciplinaMatriculaService {
     List<DisciplinaMatriculaEntity> buscarMatriculasPorAluno(Long idAluno);
 
     List<DisciplinaMatriculaEntity> buscarMatriculasPorDisciplina(Long idDisciplina);
+
+    MediaGeralAlunoDTO calcularMediaGeralDoAluno(Long idAluno);
 }
