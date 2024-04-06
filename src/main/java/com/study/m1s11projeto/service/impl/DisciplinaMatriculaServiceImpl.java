@@ -51,13 +51,9 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
 
     // Método privado para verificar se notas já foram lançadas para um aluno em uma disciplina
     private boolean notasJaLancadas(AlunoEntity aluno, DisciplinaEntity disciplina) {
-<<<<<<< Updated upstream
-        return false; // Aqui é um exemplo simples - melhorar depois sacarai
-=======
         // Se sim, retorne true
         // Se não, retorne false
         return false; // Aqui é um exemplo simples; você deve implementar a lógica real
->>>>>>> Stashed changes
     }
 
     /*
