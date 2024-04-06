@@ -33,4 +33,12 @@ public class NotaEntity implements Serializable {
     @JoinColumn(name = "disciplina_matricula_id", nullable = false)
     private DisciplinaMatriculaEntity matricula;
 
+    // Método para configurar o ID da matrícula
+    public void setIdMatricula(Long idMatricula) {
+        if (this.matricula == null) {
+            this.matricula = new DisciplinaMatriculaEntity(); // Crie uma nova instância se ainda não estiver definida
+        }
+        this.matricula.setId(idMatricula);
+    }
+
 }
