@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 public class DisciplinaServiceImpl implements DisciplinaService {
-    private static final Logger logger = LoggerFactory.getLogger(AlunoServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(DisciplinaServiceImpl.class);
     private final DisciplinaRepository disciplinaRepository;
 
     public DisciplinaServiceImpl(DisciplinaRepository disciplinaRepository) {

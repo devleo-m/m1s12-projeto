@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AlunoServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProfessorServiceImpl.class);
     private final ProfessorRepository professorRepository;
 
     public ProfessorServiceImpl(ProfessorRepository professorRepository) {
