@@ -2,115 +2,122 @@ package com.study.m1s11projeto.service.impl;
 
 import com.study.m1s11projeto.entity.DisciplinaMatriculaEntity;
 import com.study.m1s11projeto.entity.NotaEntity;
-import com.study.m1s11projeto.entity.ProfessorEntity;
 import com.study.m1s11projeto.exception.NotFoundException;
 import com.study.m1s11projeto.repository.DisciplinaMatriculaRepository;
 import com.study.m1s11projeto.repository.NotaRepository;
-import com.study.m1s11projeto.repository.ProfessorRepository;
-import com.study.m1s11projeto.service.DisciplinaMatriculaService;
 import com.study.m1s11projeto.service.NotaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+/**
+ * Implementação do serviço de notas.
+ */
 
 @Service
 public class NotaServiceImpl implements NotaService {
 
     private final NotaRepository notaRepository;
     private final DisciplinaMatriculaRepository disciplinaMatriculaRepository;
-    private final ProfessorRepository professorRepository;
 
-    public NotaServiceImpl(NotaRepository notaRepository, DisciplinaMatriculaRepository disciplinaMatriculaRepository, ProfessorRepository professorRepository) {
+    private static final Logger logger = LoggerFactory.getLogger(NotaServiceImpl.class);
+
+    /**
+     * Construtor da classe NotaServiceImpl.
+     * @param notaRepository Repositório de notas.
+     * @param disciplinaMatriculaRepository Repositório de matrículas em disciplinas.
+     */
+    public NotaServiceImpl(NotaRepository notaRepository, DisciplinaMatriculaRepository disciplinaMatriculaRepository) {
         this.notaRepository = notaRepository;
         this.disciplinaMatriculaRepository = disciplinaMatriculaRepository;
-        this.professorRepository = professorRepository;
     }
+
+    /**
+     * Adiciona uma nova nota para uma matrícula.
+     * @param novaNota A nota a ser adicionada.
+     * @return A nova nota adicionada.
+     * @throws NotFoundException Se os campos obrigatórios não forem fornecidos.
+     * @throws RuntimeException Se a nota estiver fora do intervalo válido.
+     */
     @Override
     public NotaEntity adicionarNota(NotaEntity novaNota) {
-        // Verificar se os parâmetros são válidos
-        if (novaNota.getMatricula() == null || novaNota.getNota() == null || novaNota.getCoeficiente() == null || novaNota.getProfessor() == null) {
-            throw new NotFoundException("Os campos 'matricula', 'nota', 'coeficiente' e 'professor' são obrigatórios para adicionar uma nota");
-        }
-
-        // Verificar se a nota está dentro do intervalo válido (0.0 - 10.0)
-        if (novaNota.getNota() < 0.0 || novaNota.getNota() > 10.0) {
-            throw new RuntimeException("A nota do aluno deve estar no intervalo de 0.0 a 10.0");
-        }
-
-        // Salvar a nova nota no banco de dados
+        logger.info("Adicionando nova nota para a matrícula com ID: {}", novaNota.getMatricula().getId());
+        validarNota(novaNota);
         novaNota = notaRepository.save(novaNota);
-
-        // Atualizar a média final da matrícula
         atualizarMediaFinal(novaNota.getMatricula().getId());
 
-        // Retornar a nova nota
+        logger.info("Nota adicionada com sucesso");
         return novaNota;
     }
 
+    private void validarNota(NotaEntity novaNota) {
+        if (novaNota.getMatricula() == null || novaNota.getNota() == null || novaNota.getCoeficiente() == null) {
+            throw new NotFoundException("Os campos 'matricula', 'nota' e 'coeficiente' são obrigatórios para adicionar uma nota");
+        }
+
+        if (novaNota.getNota() < 0.0 || novaNota.getNota() > 10.0) {
+            throw new RuntimeException("A nota do aluno deve estar no intervalo de 0.0 a 10.0");
+        }
+    }
+
+    /**
+     * Atualiza a média final de uma matrícula após adicionar uma nova nota.
+     * @param idMatricula O ID da matrícula a ser atualizada.
+     */
     private void atualizarMediaFinal(Long idMatricula) {
-        // Buscar a matrícula no banco de dados
+        logger.info("Atualizando a média final para a matrícula com ID: {}", idMatricula);
+
         DisciplinaMatriculaEntity matricula = disciplinaMatriculaRepository.findById(idMatricula)
                 .orElseThrow(() -> new NotFoundException("Matrícula não encontrada com o ID fornecido"));
 
-        // Calcular a média final da matrícula com base nas notas e coeficientes das disciplinas
         Double mediaFinal = calcularMediaFinal(matricula);
-
-        // Atualizar a média final da matrícula
-        BigDecimal mediaFinalBigDecimal = BigDecimal.valueOf(mediaFinal);
-        matricula.setMediaFinal(mediaFinalBigDecimal);
+        matricula.setMediaFinal(BigDecimal.valueOf(mediaFinal));
         disciplinaMatriculaRepository.save(matricula);
 
+        logger.info("Média final da matrícula atualizada com sucesso");
     }
 
+    /**
+     * Calcula a média final de uma matrícula com base nas notas e coeficientes das disciplinas.
+     * @param matricula A matrícula para a qual calcular a média final.
+     * @return A média final calculada.
+     */
     private Double calcularMediaFinal(DisciplinaMatriculaEntity matricula) {
-        // Verificar se a matrícula possui disciplinas associadas
         List<NotaEntity> notas = matricula.getNotas();
         if (notas.isEmpty()) {
-            return 0.0; // Se não houver notas associadas, a média final será 0.0
+            return 0.0;
         }
 
-        // Inicializar variáveis para calcular a média final
         double somaNotasPonderadas = 0.0;
         double somaCoeficientes = 0.0;
 
-        // Calcular a soma das notas ponderadas e dos coeficientes
         for (NotaEntity nota : notas) {
             somaNotasPonderadas += nota.getNota() * nota.getCoeficiente();
             somaCoeficientes += nota.getCoeficiente();
         }
 
-        // Calcular a média final
-        double mediaFinal = somaNotasPonderadas / somaCoeficientes;
-
-        // Retornar a média final calculada
-        return mediaFinal;
+        return somaNotasPonderadas / somaCoeficientes;
     }
 
     @Override
     public List<NotaEntity> notasPorMatricula(Long idMatricula) {
-        List<NotaEntity> notas = notaRepository.findByMatriculaId(idMatricula);
-        return notas;
+        logger.info("Listando notas para a matrícula com ID: {}", idMatricula);
+        return notaRepository.findByMatriculaId(idMatricula);
     }
 
-    @Override
-    public List<NotaEntity> notasPorAluno(Long idAluno) {
-        return List.of();
-    }
 
     @Override
     public void excluirNotaPorId(Long idNota) {
-        // Verificar se a nota existe
+        logger.info("Excluindo nota com ID: {}", idNota);
         NotaEntity nota = notaRepository.findById(idNota)
                 .orElseThrow(() -> new NotFoundException("Nota não encontrada com o ID fornecido"));
 
-        // Excluir a nota do banco de dados
         notaRepository.delete(nota);
-
-        // Atualizar a média final da matrícula associada
         atualizarMediaFinal(nota.getMatricula().getId());
+
+        logger.info("Nota excluída com sucesso");
     }
-
-
-
 }

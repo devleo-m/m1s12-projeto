@@ -1,7 +1,5 @@
 package com.study.m1s11projeto.service.impl;
 
-import com.study.m1s11projeto.DTO.AlunoDto;
-import com.study.m1s11projeto.DTO.DisciplinaDto;
 import com.study.m1s11projeto.DTO.MediaGeralAlunoDTO;
 import com.study.m1s11projeto.entity.AlunoEntity;
 import com.study.m1s11projeto.entity.DisciplinaEntity;
@@ -11,10 +9,16 @@ import com.study.m1s11projeto.repository.DisciplinaMatriculaRepository;
 import com.study.m1s11projeto.service.AlunoService;
 import com.study.m1s11projeto.service.DisciplinaMatriculaService;
 import com.study.m1s11projeto.service.DisciplinaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+/**
+ * Implementação do serviço de matrícula em disciplinas.
+ */
 
 @Service
 public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaService {
@@ -22,23 +26,32 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
     private final AlunoService alunoService;
     private final DisciplinaService disciplinaService;
 
+    private static final Logger logger = LoggerFactory.getLogger(DisciplinaMatriculaServiceImpl.class);
+
+    /**
+     * Construtor da classe DisciplinaMatriculaServiceImpl.
+     * @param matriculaRepository Repositório de matrículas em disciplinas.
+     * @param alunoService Serviço de alunos.
+     * @param disciplinaService Serviço de disciplinas.
+     */
     public DisciplinaMatriculaServiceImpl(DisciplinaMatriculaRepository matriculaRepository, AlunoService alunoService, DisciplinaService disciplinaService) {
         this.matriculaRepository = matriculaRepository;
         this.alunoService = alunoService;
         this.disciplinaService = disciplinaService;
     }
 
+    /**
+     * Matricula um aluno em uma disciplina.
+     * @param idAluno ID do aluno.
+     * @param idDisciplina ID da disciplina.
+     * @return A entidade de matrícula criada.
+     * @throws NotFoundException Se as notas já foram lançadas para o aluno na disciplina.
+     */
     @Override
     public DisciplinaMatriculaEntity matricularAluno(Long idAluno, Long idDisciplina) {
+        logger.info("Matriculando aluno na disciplina - Aluno ID: {}, Disciplina ID: {}", idAluno, idDisciplina);
         AlunoEntity aluno = alunoService.obterAlunoPorId(idAluno);
         DisciplinaEntity disciplina = disciplinaService.obterDisciplinaPorId(idDisciplina);
-
-        // Verificar se notas já foram lançadas
-        if (notasJaLancadas(aluno, disciplina)) {
-            throw new NotFoundException("Notas já foram lançadas para o aluno na disciplina.");
-            //Criar futuramente um NotaLancadaException
-            //para deixar o tratamento de erro mais bonito ;p
-        }
 
         // Matricular aluno na disciplina
         DisciplinaMatriculaEntity matricula = new DisciplinaMatriculaEntity();
@@ -48,25 +61,14 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
         return matriculaRepository.save(matricula);
     }
 
-
-
-    // Método privado para verificar se notas já foram lançadas para um aluno em uma disciplina
-    private boolean notasJaLancadas(AlunoEntity aluno, DisciplinaEntity disciplina) {
-        // Se sim, retorne true
-        // Se não, retorne false
-        return false; // Aqui é um exemplo simples; você deve implementar a lógica real
-    }
-
-    /*
-
-    private boolean notasJaLancadas(AlunoEntity aluno, DisciplinaEntity disciplina) {
-        List<NotaEntity> notas = notaRepository.findByAlunoAndDisciplina(aluno, disciplina);
-        return !notas.isEmpty();
-    }
+    /**
+     * Deleta a matrícula de uma disciplina.
+     * @param id ID da matrícula a ser deletada.
+     * @throws NotFoundException Se as notas já foram lançadas para a matrícula.
      */
-
     @Override
     public void deletarMatricula(Long id) {
+        logger.info("Deletando matrícula com ID: {}", id);
         // Verificar se notas já foram lançadas para a matrícula com o ID especificado
         DisciplinaMatriculaEntity matricula = matriculaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Matrícula não encontrada com o ID: " + id));
@@ -80,26 +82,50 @@ public class DisciplinaMatriculaServiceImpl implements DisciplinaMatriculaServic
         matriculaRepository.deleteById(id);
     }
 
+    /**
+     * Busca uma matrícula por seu ID.
+     * @param id ID da matrícula a ser buscada.
+     * @return A matrícula encontrada, ou null se não encontrada.
+     */
     @Override
     public DisciplinaMatriculaEntity buscarMatriculaPorId(Long id) {
+        logger.info("Buscando matrícula com ID: {}", id);
         return matriculaRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Busca todas as matrículas de um aluno.
+     * @param idAluno ID do aluno.
+     * @return Lista de matrículas do aluno.
+     */
     @Override
     public List<DisciplinaMatriculaEntity> buscarMatriculasPorAluno(Long idAluno) {
+        logger.info("Buscando matrículas do aluno com ID: {}", idAluno);
         AlunoEntity aluno = alunoService.obterAlunoPorId(idAluno);
         return matriculaRepository.findByAluno(aluno);
     }
 
+    /**
+     * Busca todas as matrículas de uma disciplina.
+     * @param idDisciplina ID da disciplina.
+     * @return Lista de matrículas da disciplina.
+     */
     @Override
     public List<DisciplinaMatriculaEntity> buscarMatriculasPorDisciplina(Long idDisciplina) {
+        logger.info("Buscando matrículas da disciplina com ID: {}", idDisciplina);
         DisciplinaEntity disciplina = disciplinaService.obterDisciplinaPorId(idDisciplina);
         return matriculaRepository.findByDisciplina(disciplina);
     }
 
-    //card7
+    /**
+     * Metodo final do card 7!
+     * Calcula a média geral do aluno com base nas notas de todas as disciplinas matriculadas.
+     * @param idAluno ID do aluno.
+     * @return Objeto MediaGeralAlunoDTO contendo a média geral do aluno.
+     */
     @Override
     public MediaGeralAlunoDTO calcularMediaGeralDoAluno(Long idAluno) {
+        logger.info("Calculando média geral do aluno com ID: {}", idAluno);
         List<DisciplinaMatriculaEntity> matriculas = matriculaRepository.findByAluno_Id(idAluno);
 
         double somaDasMedias = 0.0;
