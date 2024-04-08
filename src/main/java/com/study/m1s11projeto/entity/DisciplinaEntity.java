@@ -1,5 +1,6 @@
 package com.study.m1s11projeto.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,10 +23,19 @@ public class DisciplinaEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "professor_id", referencedColumnName = "id")
+    @JsonBackReference
     private ProfessorEntity professor;
 
     @JsonIgnore
     @OneToMany(mappedBy = "disciplina")
     private List<DisciplinaMatriculaEntity> matriculas;
+
+    @Override
+    public String toString() {
+        return "DisciplinaEntity{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                '}';
+    }
 
 }

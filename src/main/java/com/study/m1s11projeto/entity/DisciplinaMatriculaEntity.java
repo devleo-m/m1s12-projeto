@@ -52,8 +52,6 @@ public class DisciplinaMatriculaEntity implements Serializable {
         // definir a data de matrícula automaticamente antes de salvar
         dataMatricula = LocalDate.now();
 
-        // implementar a lógica para calcular a média final
-        // por exemplo, se tiver uma lista de notas, pode calcular a média a partir delas
         // aqui estamos apenas definindo um valor padrão
         if (mediaFinal == null) {
             mediaFinal = BigDecimal.ZERO;

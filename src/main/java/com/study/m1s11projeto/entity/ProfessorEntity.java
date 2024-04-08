@@ -1,6 +1,7 @@
 package com.study.m1s11projeto.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,8 +20,9 @@ public class ProfessorEntity implements Serializable {
     @Column(length = 150)
     private String nome;
 
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "professor")
+    @JsonManagedReference
     private List<DisciplinaEntity> disciplinas;
 
     // Construtor que aceita um argumento do tipo int para o ID do professor
@@ -31,4 +33,13 @@ public class ProfessorEntity implements Serializable {
     public ProfessorEntity() {
 
     }
+
+    @Override
+    public String toString() {
+        return "ProfessorEntity{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                '}';
+    }
+
 }

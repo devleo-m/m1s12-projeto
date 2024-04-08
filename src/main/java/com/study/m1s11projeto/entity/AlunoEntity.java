@@ -18,8 +18,6 @@ public class AlunoEntity implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    //@NotBlank(message = "O nome do aluno é obrigatório")
-    //@Size(max = 100, message = "O nome do aluno deve ter no máximo 100 caracteres")
     @Column(name = "nome", length = 150)
     private String nome;
 
