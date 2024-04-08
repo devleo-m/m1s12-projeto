@@ -20,11 +20,9 @@ public class AlunoController {
 
     private static final Logger logger = LoggerFactory.getLogger(AlunoController.class);
     private final AlunoService alunoService;
-    private final NotaService notaService;
 
-    public AlunoController(AlunoService alunoService, NotaService notaService) {
+    public AlunoController(AlunoService alunoService) {
         this.alunoService = alunoService;
-        this.notaService = notaService;
     }
 
     @GetMapping
@@ -66,21 +64,5 @@ public class AlunoController {
         logger.info("DELETE /api/alunos/{} -> Aluno deletado com sucesso", id);
         return ResponseEntity.noContent().build();
     }
-
-//    @GetMapping("/{id}/media-geral")
-//    public ResponseEntity<Double> calcularMediaGeral(@PathVariable Long id) {
-//        // Recupere todas as notas do aluno com o ID fornecido
-//        List<NotaEntity> notas = notaService.notasPorAluno(id);
-//
-//        // Calcule a média geral das notas
-//        double somaNotas = 0.0;
-//        for (NotaEntity nota : notas) {
-//            somaNotas += nota.getNota();
-//        }
-//        double mediaGeral = notas.isEmpty() ? 0.0 : somaNotas / notas.size();
-//
-//        // Retorne a média geral como resposta
-//        return ResponseEntity.status(HttpStatus.OK).body(mediaGeral);
-//    }
 
 }

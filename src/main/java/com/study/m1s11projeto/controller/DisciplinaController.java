@@ -17,11 +17,9 @@ import java.util.List;
 public class DisciplinaController {
 
     private final DisciplinaService disciplinaService;
-    private final ProfessorService professorService;
 
-    public DisciplinaController(DisciplinaService disciplinaService, ProfessorService professorService) {
+    public DisciplinaController(DisciplinaService disciplinaService) {
         this.disciplinaService = disciplinaService;
-        this.professorService = professorService;
     }
 
     @GetMapping
