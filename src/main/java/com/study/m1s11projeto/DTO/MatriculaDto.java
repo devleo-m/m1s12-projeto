@@ -9,16 +9,8 @@ public class MatriculaDto {
         return idAluno;
     }
 
-    public void setIdAluno(Long idAluno) {
-        this.idAluno = idAluno;
-    }
-
     // getters e setters para idDisciplina
     public Long getIdDisciplina() {
         return idDisciplina;
-    }
-
-    public void setIdDisciplina(Long idDisciplina) {
-        this.idDisciplina = idDisciplina;
     }
 }
